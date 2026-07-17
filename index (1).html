@@ -1,0 +1,1393 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Richmond Auto Mall Campaigns</title>
+<style>:root {
+  color-scheme: light;
+  background-color: transparent !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --main-surface-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 10px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-visualize-standalone] {
+  background-color: var(--background) !important;
+}
+
+/* Generic mobile code-block hosts provide light/dark mode but no series palette.
+   AppBlock hosts set all six variables themselves. */
+:root:not([data-app-block-surface]) {
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(#f3883b, #f59a56);
+  --viz-series-3: light-dark(#5dc977, #74d58b);
+  --viz-series-4: light-dark(#eb77b1, #f08fc0);
+  --viz-series-5: light-dark(#9b79ec, #aa91ef);
+  --viz-series-6: light-dark(#3ab9b1, #5acbc2);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+:root:not([data-app-block-surface]) > body {
+  padding: 12px;
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-legend,
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+</style>
+</head>
+<body>
+<div id="ram-campaign-wall">
+  <style>
+    #ram-campaign-wall {
+      --ram-blue: var(--viz-series-1);
+      --ram-blue-2: var(--viz-series-2);
+      color: var(--foreground);
+      width: 100%;
+    }
+    #ram-campaign-wall * { box-sizing: border-box; }
+    #ram-campaign-wall strong, #ram-campaign-wall b { font-weight: 500; }
+    #ram-campaign-wall .campaign-picker {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    #ram-campaign-wall .campaign-picker .btn {
+      min-width: 0;
+      white-space: normal;
+    }
+    #ram-campaign-wall .campaign-shell {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.9fr) minmax(280px, 1.1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    #ram-campaign-wall .poster-wrap {
+      width: 100%;
+      max-width: 390px;
+      justify-self: center;
+    }
+    #ram-campaign-wall .poster {
+      --paper: var(--card);
+      --ink: var(--card-foreground);
+      --pop: var(--viz-series-1);
+      --pop2: var(--viz-series-2);
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+      border-radius: 14px;
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 0 20px 45px color-mix(in srgb, var(--foreground) 12%, transparent);
+      isolation: isolate;
+    }
+    #ram-campaign-wall .poster.theme-2 { --pop: var(--viz-series-2); --pop2: var(--viz-series-4); }
+    #ram-campaign-wall .poster.theme-3 { --pop: var(--viz-series-3); --pop2: var(--viz-series-1); }
+    #ram-campaign-wall .poster.theme-4 { --pop: var(--viz-series-4); --pop2: var(--viz-series-6); }
+    #ram-campaign-wall .poster.theme-5 { --pop: var(--viz-series-5); --pop2: var(--viz-series-2); }
+    #ram-campaign-wall .poster.theme-6 { --pop: var(--viz-series-6); --pop2: var(--viz-series-3); }
+    #ram-campaign-wall .poster-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 22px;
+    }
+    #ram-campaign-wall .brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      z-index: 5;
+    }
+    #ram-campaign-wall .brand img {
+      width: 134px;
+      height: auto;
+      display: block;
+      background: transparent;
+    }
+    #ram-campaign-wall .poster-kicker {
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    #ram-campaign-wall .poster h2 {
+      margin: 0;
+      font-size: clamp(28px, 5.4vw, 48px);
+      line-height: .94;
+      letter-spacing: -.055em;
+      font-weight: 500;
+      text-wrap: balance;
+    }
+    #ram-campaign-wall .poster p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.32;
+    }
+    #ram-campaign-wall .poster-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-end;
+      font-size: 10px;
+      letter-spacing: .04em;
+      position: relative;
+      z-index: 8;
+    }
+    #ram-campaign-wall .detail {
+      min-width: 0;
+      padding-top: 2px;
+    }
+    #ram-campaign-wall .detail-index {
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+    }
+    #ram-campaign-wall .detail h2 {
+      margin: 5px 0 10px;
+      font-size: clamp(26px, 4.7vw, 40px);
+      line-height: 1;
+      letter-spacing: -.045em;
+      font-weight: 500;
+    }
+    #ram-campaign-wall .detail .idea {
+      margin: 0 0 20px;
+      color: var(--foreground);
+      font-size: 16px;
+      line-height: 1.45;
+      max-width: 54ch;
+    }
+    #ram-campaign-wall .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    #ram-campaign-wall .detail h3 {
+      margin: 0 0 7px;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    #ram-campaign-wall .detail ul {
+      margin: 0;
+      padding-left: 17px;
+      color: var(--foreground);
+    }
+    #ram-campaign-wall .detail li {
+      margin: 0 0 7px;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    #ram-campaign-wall .copy-bank {
+      grid-column: 1 / -1;
+    }
+    #ram-campaign-wall .copy-line {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    /* 01 Browser tabs */
+    #ram-campaign-wall .tabs-ad { background: color-mix(in srgb, var(--muted) 82%, var(--paper)); }
+    #ram-campaign-wall .browser {
+      margin: 34px -22px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    #ram-campaign-wall .tabbar { display: flex; gap: 3px; padding: 8px 10px 0; background: var(--muted); overflow: hidden; }
+    #ram-campaign-wall .tab {
+      flex: 0 0 30%;
+      padding: 7px 8px;
+      border-radius: 7px 7px 0 0;
+      background: color-mix(in srgb, var(--card) 72%, var(--muted));
+      font-size: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #ram-campaign-wall .tab.active { background: var(--card); color: var(--pop); }
+    #ram-campaign-wall .urlbar { margin: 8px 10px; padding: 7px 10px; border-radius: 99px; background: var(--muted); font-size: 8px; color: var(--muted-foreground); }
+    #ram-campaign-wall .browser-copy { padding: 20px 22px 12px; }
+    #ram-campaign-wall .browser-copy h2 { max-width: 270px; }
+    #ram-campaign-wall .browser-copy .or { color: var(--pop); }
+    #ram-campaign-wall .car-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 22px; }
+    #ram-campaign-wall .result { aspect-ratio: 1.25; border-radius: 6px; background: color-mix(in srgb, var(--pop) 12%, var(--muted)); position: relative; overflow: hidden; }
+    #ram-campaign-wall .result:before { content: ""; position: absolute; width: 70%; height: 24%; left: 15%; bottom: 23%; border-radius: 22px 28px 8px 8px; background: var(--pop); opacity: .75; }
+    #ram-campaign-wall .result:after { content: "●    ●"; position: absolute; left: 23%; right: 14%; bottom: 14%; font-size: 8px; letter-spacing: 19px; color: var(--ink); }
+
+    /* 02 map */
+    #ram-campaign-wall .map-ad { background: rgb(238 246 251); color: rgb(20 38 59); }
+    #ram-campaign-wall .map-ad .map-head h2,
+    #ram-campaign-wall .map-ad .poster-kicker,
+    #ram-campaign-wall .map-ad .poster-footer { color: rgb(20 38 59); }
+    #ram-campaign-wall .map-head { margin-top: 34px; max-width: 300px; position: relative; z-index: 5; }
+    #ram-campaign-wall .map-art { position: absolute; inset: 48% -12% 5%; transform: rotate(-7deg); }
+    #ram-campaign-wall .map-road { position: absolute; background: rgb(210 222 231); border: 1px solid rgb(176 194 207); }
+    #ram-campaign-wall .road-a { width: 92%; height: 44px; left: 4%; top: 40%; border-radius: 45% 55% 48% 50%; transform: rotate(-9deg); }
+    #ram-campaign-wall .road-b { width: 54px; height: 108%; left: 50%; top: -5%; border-radius: 42%; transform: rotate(19deg); }
+    #ram-campaign-wall .route { position: absolute; inset: 15% 12% 18%; border: 7px solid rgb(9 118 189); border-radius: 48% 42% 54% 45%; opacity: .9; }
+    #ram-campaign-wall .dealer { position: absolute; width: 56px; height: 32px; border-radius: 4px; background: rgb(255 255 255); color: rgb(20 38 59); border: 1px solid rgb(176 194 207); box-shadow: 0 4px 10px rgb(20 38 59 / 14%); display: grid; place-items: center; font-size: 8px; font-weight: 500; }
+    #ram-campaign-wall .d1 { left: 12%; top: 12%; } #ram-campaign-wall .d2 { left: 31%; top: 5%; } #ram-campaign-wall .d3 { right: 17%; top: 17%; }
+    #ram-campaign-wall .d4 { right: 6%; top: 49%; } #ram-campaign-wall .d5 { right: 26%; bottom: 2%; } #ram-campaign-wall .d6 { left: 29%; bottom: 5%; }
+    #ram-campaign-wall .d7 { left: 6%; bottom: 28%; } #ram-campaign-wall .street-label { position: absolute; font-size: 8px; letter-spacing: .08em; color: rgb(68 88 104); font-weight: 500; }
+    #ram-campaign-wall .sl { left: 16%; top: 49%; transform: rotate(-9deg); } #ram-campaign-wall .pw { left: 54%; top: 22%; transform: rotate(78deg); }
+
+    /* 03 menu */
+    #ram-campaign-wall .menu-ad { background: color-mix(in srgb, var(--pop) 8%, var(--paper)); }
+    #ram-campaign-wall .menu-sheet { margin: 28px 3px 0; padding: 18px; border: 1px solid var(--ink); box-shadow: 8px 8px 0 color-mix(in srgb, var(--pop) 35%, transparent); flex: 1; }
+    #ram-campaign-wall .menu-title { text-align: center; border-bottom: 2px solid var(--ink); padding-bottom: 10px; }
+    #ram-campaign-wall .menu-title h2 { font-family: Georgia, serif; letter-spacing: -.04em; }
+    #ram-campaign-wall .menu-title p { margin-top: 6px; font-style: italic; }
+    #ram-campaign-wall .menu-list { margin-top: 14px; display: grid; gap: 8px; }
+    #ram-campaign-wall .menu-item { display: flex; align-items: center; gap: 9px; font-size: 12px; }
+    #ram-campaign-wall .menu-item:before { content: "✓"; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: var(--pop); color: var(--paper); }
+    #ram-campaign-wall .menu-dots { flex: 1; border-bottom: 1px dotted var(--ink); opacity: .4; }
+
+    /* 04 compressed timeline */
+    #ram-campaign-wall .time-ad { background: rgb(37 39 44); color: rgb(247 248 250); }
+    #ram-campaign-wall .time-ad .brand img { filter: grayscale(1) brightness(0) invert(1); background: transparent; }
+    #ram-campaign-wall .time-ad .poster-kicker,
+    #ram-campaign-wall .time-ad .time-head h2,
+    #ram-campaign-wall .time-ad .time-row,
+    #ram-campaign-wall .time-ad .time-row span,
+    #ram-campaign-wall .time-ad .poster-footer { color: rgb(247 248 250); }
+    #ram-campaign-wall .time-head { margin-top: 38px; }
+    #ram-campaign-wall .time-head em { color: var(--pop); font-style: normal; }
+    #ram-campaign-wall .timeline { margin-top: 22px; border-top: 1px solid rgb(247 248 250 / 32%); }
+    #ram-campaign-wall .time-row { display: grid; grid-template-columns: 54px 1fr auto; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgb(247 248 250 / 20%); font-size: 11px; }
+    #ram-campaign-wall .time-row strong { color: var(--pop); font-weight: 500; }
+    #ram-campaign-wall .time-ad .time-row span:last-child { color: rgb(247 248 250 / 62%); }
+
+    /* 05 dating */
+    #ram-campaign-wall .date-ad { background: radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--pop2) 34%, transparent), transparent 38%), color-mix(in srgb, var(--pop) 14%, var(--paper)); }
+    #ram-campaign-wall .date-head { margin-top: 32px; position: relative; z-index: 3; }
+    #ram-campaign-wall .phone-card { width: 71%; margin: 18px auto 0; padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 22px; box-shadow: 0 18px 40px color-mix(in srgb, var(--foreground) 20%, transparent); transform: rotate(3deg); }
+    #ram-campaign-wall .car-photo { aspect-ratio: 1.05; border-radius: 14px; background: linear-gradient(145deg, color-mix(in srgb, var(--pop) 20%, var(--muted)), color-mix(in srgb, var(--pop2) 28%, var(--muted))); position: relative; overflow: hidden; }
+    #ram-campaign-wall .car-photo:before { content: ""; position: absolute; width: 78%; height: 24%; left: 10%; bottom: 29%; border-radius: 40% 50% 14% 12%; background: var(--ink); }
+    #ram-campaign-wall .car-photo:after { content: "●        ●"; position: absolute; left: 19%; bottom: 22%; color: var(--pop); font-size: 14px; letter-spacing: 37px; }
+    #ram-campaign-wall .profile { padding: 10px 4px 4px; }
+    #ram-campaign-wall .profile strong { font-size: 15px; font-weight: 500; }
+    #ram-campaign-wall .profile span { color: var(--muted-foreground); font-size: 10px; }
+    #ram-campaign-wall .swipe { display: flex; justify-content: center; gap: 26px; margin-top: 7px; }
+    #ram-campaign-wall .swipe b { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--muted); font-weight: 500; }
+
+    /* 06 signs */
+    #ram-campaign-wall .sign-ad { background: rgb(231 243 250); color: rgb(20 38 59); }
+    #ram-campaign-wall .sign-ad .sign-head h2,
+    #ram-campaign-wall .sign-ad .poster-kicker,
+    #ram-campaign-wall .sign-ad .poster-footer { color: rgb(20 38 59); }
+    #ram-campaign-wall .sign-head { margin-top: 35px; width: 75%; position: relative; z-index: 4; }
+    #ram-campaign-wall .signpost { position: absolute; left: 48%; top: 52%; bottom: -5%; width: 8px; background: rgb(55 75 91); }
+    #ram-campaign-wall .sign { position: absolute; left: 50%; min-width: 150px; padding: 9px 26px 9px 12px; background: rgb(18 62 96); color: rgb(255 255 255); border-radius: 3px; font-size: 11px; text-transform: uppercase; letter-spacing: .09em; box-shadow: 5px 6px 0 rgb(9 118 189 / 32%); z-index: 3; }
+    #ram-campaign-wall .sign:after { content: "›"; position: absolute; right: 9px; }
+    #ram-campaign-wall .s1 { top: 55%; transform: rotate(-3deg); } #ram-campaign-wall .s2 { top: 64%; transform: rotate(2deg); left: 20%; text-align: right; padding: 9px 12px 9px 26px; }
+    #ram-campaign-wall .s2:after { content: "‹"; left: 9px; right: auto; } #ram-campaign-wall .s3 { top: 73%; transform: rotate(-2deg); } #ram-campaign-wall .s4 { top: 82%; left: 18%; text-align: right; padding: 9px 12px 9px 26px; }
+    #ram-campaign-wall .s4:after { content: "‹"; left: 9px; right: auto; }
+
+    /* 07 receipt */
+    #ram-campaign-wall .receipt-ad { background: color-mix(in srgb, var(--muted) 70%, var(--paper)); }
+    #ram-campaign-wall .receipt { width: 78%; margin: 28px auto -28px; padding: 18px 20px 42px; background: var(--card); color: var(--card-foreground); box-shadow: 0 12px 32px color-mix(in srgb, var(--foreground) 15%, transparent); transform: rotate(-2deg); flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    #ram-campaign-wall .receipt-logo { text-align: center; font-size: 10px; letter-spacing: .12em; }
+    #ram-campaign-wall .receipt h2 { margin: 22px 0 18px; text-align: center; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 28px; letter-spacing: -.04em; }
+    #ram-campaign-wall .receipt-line { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed var(--border); padding: 8px 0; font-size: 10px; }
+    #ram-campaign-wall .receipt-total { margin-top: 14px; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 10px 0; font-size: 16px; display: flex; justify-content: space-between; }
+    #ram-campaign-wall .barcode { height: 30px; margin-top: 20px; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 9px); }
+
+    /* 08 hidden object */
+    #ram-campaign-wall .find-ad { background: color-mix(in srgb, var(--pop) 8%, var(--paper)); }
+    #ram-campaign-wall .find-head { margin-top: 30px; width: 84%; position: relative; z-index: 4; }
+    #ram-campaign-wall .mini-city { position: absolute; inset: 52% -3% 0; overflow: hidden; }
+    #ram-campaign-wall .building { position: absolute; bottom: 35%; width: 31%; height: 38%; background: var(--card); border: 2px solid var(--ink); }
+    #ram-campaign-wall .b1 { left: 1%; } #ram-campaign-wall .b2 { left: 34%; height: 47%; } #ram-campaign-wall .b3 { right: 1%; height: 34%; }
+    #ram-campaign-wall .building:before { content: "DEALER"; position: absolute; left: 8%; top: 12%; padding: 3px 5px; background: var(--pop); color: var(--paper); font-size: 7px; letter-spacing: .08em; }
+    #ram-campaign-wall .building:after { content: "▦  ▦  ▦"; position: absolute; left: 9%; bottom: 18%; font-size: 17px; letter-spacing: 5px; color: color-mix(in srgb, var(--ink) 60%, transparent); }
+    #ram-campaign-wall .car-swarm { position: absolute; left: 0; right: 0; bottom: 5%; height: 36%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; align-items: end; }
+    #ram-campaign-wall .tiny-car { height: 24px; border-radius: 13px 16px 5px 5px; background: color-mix(in srgb, var(--pop2) 55%, var(--muted)); border: 1px solid var(--ink); transform: rotate(var(--r)); }
+    #ram-campaign-wall .tiny-car.target { background: var(--pop); box-shadow: 0 0 0 4px color-mix(in srgb, var(--pop) 20%, transparent); }
+
+    /* 09 passport */
+    #ram-campaign-wall .passport-ad { background: color-mix(in srgb, var(--pop) 12%, var(--paper)); }
+    #ram-campaign-wall .passport { margin: 32px 4px 0; padding: 18px; border: 1px solid var(--ink); background: var(--card); flex: 1; position: relative; }
+    #ram-campaign-wall .passport:before { content: "RICHMOND • BC • CANADA • AUTO MALL • "; position: absolute; inset: 8px; border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); display: flex; justify-content: center; padding-top: 7px; font-size: 7px; letter-spacing: .13em; }
+    #ram-campaign-wall .passport h2 { margin-top: 18px; text-align: center; font-family: Georgia, serif; }
+    #ram-campaign-wall .stamps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 24px 4px 0; }
+    #ram-campaign-wall .stamp { aspect-ratio: 1; border: 2px solid var(--pop); border-radius: 50%; display: grid; place-items: center; text-align: center; color: var(--pop); text-transform: uppercase; font-size: 9px; line-height: 1.2; transform: rotate(var(--r)); }
+    #ram-campaign-wall .stamp:nth-child(2), #ram-campaign-wall .stamp:nth-child(3) { border-style: double; border-width: 5px; }
+
+    /* 10 swatches */
+    #ram-campaign-wall .swatch-ad { background: var(--paper); }
+    #ram-campaign-wall .swatch-head { margin-top: 32px; position: relative; z-index: 4; }
+    #ram-campaign-wall .swatch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
+    #ram-campaign-wall .swatch-card { background: var(--card); border: 1px solid var(--border); padding: 6px; box-shadow: 3px 4px 0 color-mix(in srgb, var(--foreground) 10%, transparent); }
+    #ram-campaign-wall .swatch-color { aspect-ratio: 1.15; background: color-mix(in srgb, var(--c) 65%, var(--muted)); position: relative; }
+    #ram-campaign-wall .swatch-color:before { content: ""; position: absolute; width: 76%; height: 24%; left: 12%; top: 39%; border-radius: 40% 50% 13% 10%; background: var(--ink); opacity: .78; }
+    #ram-campaign-wall .swatch-card span { display: block; margin-top: 5px; font-size: 8px; text-transform: uppercase; letter-spacing: .08em; }
+
+    @media (max-width: 700px) {
+      #ram-campaign-wall .campaign-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #ram-campaign-wall .campaign-shell { grid-template-columns: 1fr; }
+      #ram-campaign-wall .detail { padding-top: 0; }
+      #ram-campaign-wall .poster h2 { font-size: clamp(31px, 10vw, 48px); }
+    }
+    @media (max-width: 420px) {
+      #ram-campaign-wall .detail-grid { grid-template-columns: 1fr; }
+      #ram-campaign-wall .copy-bank { grid-column: 1; }
+      #ram-campaign-wall .poster-inner { padding: 18px; }
+      #ram-campaign-wall .browser { margin-left: -18px; margin-right: -18px; }
+    }
+  </style>
+
+  <div class="campaign-picker" role="list" aria-label="Campaign concepts">
+    <button type="button" class="btn viz-tile" data-campaign="0" aria-pressed="true">01 · Tabs</button>
+    <button type="button" class="btn viz-tile" data-campaign="1" aria-pressed="false">02 · Map</button>
+    <button type="button" class="btn viz-tile" data-campaign="2" aria-pressed="false">03 · Menu</button>
+    <button type="button" class="btn viz-tile" data-campaign="3" aria-pressed="false">04 · Saturday</button>
+    <button type="button" class="btn viz-tile" data-campaign="4" aria-pressed="false">05 · Your Type</button>
+    <button type="button" class="btn viz-tile" data-campaign="5" aria-pressed="false">06 · Signs</button>
+    <button type="button" class="btn viz-tile" data-campaign="6" aria-pressed="false">07 · Receipt</button>
+    <button type="button" class="btn viz-tile" data-campaign="7" aria-pressed="false">08 · Find It</button>
+    <button type="button" class="btn viz-tile" data-campaign="8" aria-pressed="false">09 · Passport</button>
+    <button type="button" class="btn viz-tile" data-campaign="9" aria-pressed="false">10 · Every Kind</button>
+  </div>
+
+  <div class="campaign-shell">
+    <div class="poster-wrap"><div id="ram-poster" class="poster" aria-live="polite"></div></div>
+    <section class="detail" aria-live="polite">
+      <div id="ram-detail"></div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.getElementById("ram-campaign-wall");
+      var poster = document.getElementById("ram-poster");
+      var detail = document.getElementById("ram-detail");
+      var logo = "data:image/webp;base64,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";
+      var logoTag = '<img src="' + logo + '" alt="Richmond Auto Mall">';
+      var campaigns = [
+        {
+          title: "Close Your Tabs.",
+          idea: "Turns the research spiral into the reason to visit: all the comparisons people are trying to make online already exist in one walkable place.",
+          look: ["Maxed-out browser chrome", "UI grey + RAM blue", "Tabs become the recurring media device"],
+          extensions: ["OOH with oversized browser tabs", "Reels: physically closing 47 tabs", "Showroom-window tab decals"],
+          copy: ["Close your tabs. Walk the row.", "Your comparison spreadsheet, but you can sit in it.", "Ctrl+W. Then head to Smallwood Place."],
+          cls: "tabs-ad theme-1",
+          art: function () { return '<div class="poster-inner"><div class="brand">' + logoTag + '<span class="poster-kicker">Comparison mode</span></div><div class="browser"><div class="tabbar"><div class="tab">Best SUV 2026</div><div class="tab">EV range...</div><div class="tab active">Richmond Auto Mall</div><div class="tab">Car reviews</div></div><div class="urlbar">richmondautomall.com / every-option-in-one-place</div><div class="browser-copy"><h2>47 tabs.<br><span class="or">Or one trip.</span></h2></div><div class="car-results"><div class="result"></div><div class="result"></div><div class="result"></div></div></div><div class="poster-footer"><span>Close your tabs. Walk the row.</span><span>Smallwood Pl →</span></div></div>'; }
+        },
+        {
+          title: "The Auto Mall Map",
+          idea: "Makes the place itself the product. The map becomes a flexible illustration system that shows how unusually easy it is to compare brands in person.",
+          look: ["Illustrated navigation-map language", "Actual street names with a diagrammatic dealer cluster", "RAM route line becomes a graphic asset"],
+          extensions: ["Animated route Reels", "Transit-shelter campus maps", "Dealer-window wayfinding decals"],
+          copy: ["Park once. Compare everything.", "The whole mall is the showroom.", "Every road leads to your next car."],
+          cls: "map-ad theme-2",
+          art: function () { return '<div class="poster-inner" style="background:#eef6fb;color:#14263b"><div class="brand">' + logoTag + '<span class="poster-kicker" style="color:#14263b">You are here</span></div><div style="margin-top:22px;color:#14263b"><h2 style="color:#14263b;font-size:40px;line-height:.94">Park once.<br>Compare everything.</h2></div><div aria-label="Richmond Auto Mall dealer map" style="margin-top:16px;flex:1;min-height:0;background:#ffffff;border:2px solid #b7cedd;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;color:#14263b"><div style="background:#0876bd;color:#ffffff;border-radius:7px;padding:7px 10px;font-size:10px;font-weight:700;letter-spacing:.09em;text-align:center">SMALLWOOD PLACE →</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;flex:1"><div style="background:#e9f3f9;border:1px solid #b7cedd;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">TOYOTA</div><div style="background:#e9f3f9;border:1px solid #b7cedd;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">PORSCHE</div><div style="background:#e9f3f9;border:1px solid #b7cedd;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">HYUNDAI</div><div style="background:#e9f3f9;border:1px solid #b7cedd;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">MAZDA</div><div style="background:#14263b;color:#ffffff;border:1px solid #14263b;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">YOU<br>ARE HERE</div><div style="background:#e9f3f9;border:1px solid #b7cedd;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">HONDA</div><div style="background:#e9f3f9;border:1px solid #b7cedd;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">LEXUS</div><div style="background:#e9f3f9;border:1px solid #b7cedd;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">VOLKSWAGEN</div><div style="background:#e9f3f9;border:1px solid #b7cedd;border-radius:7px;padding:9px 4px;text-align:center;font-size:9px;font-weight:700">+ 10 MORE</div></div><div style="border:2px dashed #0876bd;color:#0876bd;border-radius:7px;padding:6px 10px;font-size:9px;font-weight:700;letter-spacing:.08em;text-align:center">PARKWOOD WAY · 2 MIN WALK</div></div><div class="poster-footer" style="color:#14263b"><span>18 dealerships. 20+ brands.</span><span>One stop.</span></div></div>'; }
+        },
+        {
+          title: "The Test-Drive Menu",
+          idea: "Treats comparison shopping like ordering a tasting menu: try the practical option, the fun option and the one you did not expect to love.",
+          look: ["Classic diner-menu typography", "Checkbox ordering system", "Vehicle categories instead of dishes"],
+          extensions: ["Take-one menu print ads", "Social polls: what are you ordering?", "Weekend tasting-menu event"],
+          copy: ["One of everything, please.", "Come hungry for options.", "Sedan? SUV? EV? Truck? Try the menu."],
+          cls: "menu-ad theme-3",
+          art: function () { return '<div class="poster-inner" style="background:#eef8f1;color:#14263b"><div class="brand">' + logoTag + '<span class="poster-kicker" style="color:#14263b">Today’s selection</span></div><div aria-label="Test-drive menu" style="margin-top:22px;flex:1;min-height:0;background:#ffffff;color:#14263b;border:2px solid #14263b;border-radius:4px;padding:18px;box-shadow:8px 8px 0 #8bc9a1;display:flex;flex-direction:column"><div style="text-align:center;border-bottom:2px solid #14263b;padding-bottom:11px"><h2 style="color:#14263b;font-family:Georgia,serif;font-size:31px;line-height:1.02;letter-spacing:-.04em">One of everything,<br>please.</h2><p style="margin-top:6px;color:#40624b;font-style:italic">A test-drive tasting menu</p></div><div style="margin-top:13px;display:grid;gap:9px;color:#14263b"><div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:19px;height:19px;border-radius:50%;background:#0876bd;color:#ffffff;display:grid;place-items:center;font-weight:700;flex:none">✓</span><span>Daily-driver sedan</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:19px;height:19px;border-radius:50%;background:#0876bd;color:#ffffff;display:grid;place-items:center;font-weight:700;flex:none">✓</span><span>Family-size SUV</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:19px;height:19px;border-radius:50%;background:#0876bd;color:#ffffff;display:grid;place-items:center;font-weight:700;flex:none">✓</span><span>All-electric wildcard</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:19px;height:19px;border-radius:50%;background:#0876bd;color:#ffffff;display:grid;place-items:center;font-weight:700;flex:none">✓</span><span>Weekend fun car</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:19px;height:19px;border-radius:50%;background:#0876bd;color:#ffffff;display:grid;place-items:center;font-weight:700;flex:none">✓</span><span>Truck, just in case</span></div></div><div style="margin-top:auto;border-top:1px solid #8aa095;padding-top:8px;color:#40624b;font-size:9px;text-align:center;letter-spacing:.08em;text-transform:uppercase">Choose as many as you like</div></div><div class="poster-footer" style="color:#14263b"><span>Served daily on Smallwood Place</span><span>20+ brands</span></div></div>'; }
+        },
+        {
+          title: "Saturday, Compressed.",
+          idea: "Shows how much car shopping can fit into one afternoon when the dealerships are together. The schedule is the proof, not just a claim.",
+          look: ["Airport departure-board precision", "High-contrast time blocks", "The whole day resolves to one address"],
+          extensions: ["DOOH with live Saturday clock", "15-second itinerary Reels", "Calendar-invite paid social"],
+          copy: ["Your entire car search. Saturday, 11–3.", "Four test drives. One parking spot.", "Spend less weekend looking."],
+          cls: "time-ad theme-4",
+          art: function () { return '<div class="poster-inner"><div class="brand">' + logoTag + '<span class="poster-kicker">Saturday schedule</span></div><div class="time-head"><h2>Your whole car search.<br><em>11–3.</em></h2></div><div class="timeline"><div class="time-row"><strong>11:00</strong><span>First test drive</span><span>Smallwood</span></div><div class="time-row"><strong>11:45</strong><span>Compare the hybrid</span><span>2 min walk</span></div><div class="time-row"><strong>12:30</strong><span>Try the wildcard</span><span>Next door</span></div><div class="time-row"><strong>1:20</strong><span>Lunch + shortlist</span><span>On site</span></div><div class="time-row"><strong>2:10</strong><span>Final contender</span><span>Parkwood</span></div><div class="time-row"><strong>3:00</strong><span>Decision made</span><span>Done</span></div></div><div class="poster-footer"><span>18 dealerships. One afternoon.</span><span>Richmond Auto Mall</span></div></div>'; }
+        },
+        {
+          title: "Your Type Is Parked Here.",
+          idea: "Borrows dating-app behaviour to make vehicle discovery playful. People may not know the model they want, but they definitely recognize their type.",
+          look: ["Glossy profile-card photography", "Swipe gestures and compatibility prompts", "Car personalities instead of spec sheets"],
+          extensions: ["Swipeable Story quiz", "‘It’s a match’ test-drive booking", "Creator blind-date test drives"],
+          copy: ["Your type is parked here.", "Stop swiping. Start driving.", "Tall, quiet, good in the snow."],
+          cls: "date-ad theme-5",
+          art: function () { return '<div class="poster-inner"><div class="brand">' + logoTag + '<span class="poster-kicker">98% match</span></div><div class="date-head"><h2>Your type is<br>parked here.</h2></div><div class="phone-card"><div class="car-photo"></div><div class="profile"><strong>The practical one, 2026</strong><br><span>Tall • quiet • good in the snow</span><div class="swipe"><b>×</b><b>♥</b></div></div></div><div class="poster-footer"><span>Meet in person at Richmond Auto Mall</span><span>→</span></div></div>'; }
+        },
+        {
+          title: "Follow the Signs.",
+          idea: "Uses the auto mall’s physical wayfinding as an ownable campaign language. Every need, budget and personality gets a direction.",
+          look: ["Big municipal road-sign shapes", "Punchy category labels", "Works beautifully in outdoor media"],
+          extensions: ["Directional billboards near Highway 99", "Floor arrows through the mall", "Category-by-category carousel"],
+          copy: ["Whatever you’re looking for, it’s this way.", "Luxury left. Practical right. Fun everywhere.", "Follow the signs to your next car."],
+          cls: "sign-ad theme-6",
+          art: function () { return '<div class="poster-inner"><div class="brand">' + logoTag + '<span class="poster-kicker">Next exit: options</span></div><div class="sign-head"><h2>Whatever you want.<br>It’s this way.</h2></div><div class="signpost"></div><div class="sign s1">Electric + hybrid</div><div class="sign s2">Family SUVs</div><div class="sign s3">Trucks + adventure</div><div class="sign s4">Luxury + fun</div><div class="poster-footer"><span>Smallwood Pl • Parkwood Way</span><span>18 dealerships</span></div></div>'; }
+        },
+        {
+          title: "The One-Stop Receipt",
+          idea: "Turns a shopping receipt into hard-working proof of value: lots of comparisons, surprisingly little driving between them.",
+          look: ["Extra-long thermal receipt", "Dry, factual retail copy", "One-stop total as the punchline"],
+          extensions: ["Receipt-shaped print inserts", "CGI receipt unrolling across the mall", "Post-visit comparison checklist"],
+          copy: ["Comparison shopping. Total stops: 1.", "A whole lot of cars. Very little running around.", "Keep the receipt. Lose the regret."],
+          cls: "receipt-ad theme-1",
+          art: function () { return '<div class="poster-inner"><div class="brand">' + logoTag + '<span class="poster-kicker">Proof of shopping</span></div><div class="receipt"><div class="receipt-logo">RICHMOND AUTO MALL</div><h2>COMPARE EVERYTHING</h2><div class="receipt-line"><span>DEALERSHIPS</span><span>18</span></div><div class="receipt-line"><span>BRANDS</span><span>20+</span></div><div class="receipt-line"><span>TEST DRIVES</span><span>AS NEEDED</span></div><div class="receipt-line"><span>BROWSER TABS</span><span>0</span></div><div class="receipt-total"><span>TOTAL STOPS</span><strong>1</strong></div><div class="barcode"></div></div><div class="poster-footer"><span>13460 Smallwood Place</span><span>THANK YOU</span></div></div>'; }
+        },
+        {
+          title: "The Right Car Is in Here.",
+          idea: "A dense illustrated dealership world rewards looking. Every execution hides a featured vehicle or tiny visual joke somewhere inside the auto mall.",
+          look: ["Busy editorial illustration", "Dealerships, people and dozens of cars", "Hidden-object mechanic rewards attention"],
+          extensions: ["Weekly ‘find the car’ social posts", "Large-format mural takeover", "Kids’ activity sheet for family visits"],
+          copy: ["The right car is in here somewhere.", "Good thing they’re all here.", "Find the red EV. Then come test-drive it."],
+          cls: "find-ad theme-2",
+          art: function () { return '<div class="poster-inner"><div class="brand">' + logoTag + '<span class="poster-kicker">Find the red EV</span></div><div class="find-head"><h2>The right car is in here somewhere.</h2></div><div class="mini-city"><div class="building b1"></div><div class="building b2"></div><div class="building b3"></div><div class="car-swarm"><div class="tiny-car" style="--r:-4deg"></div><div class="tiny-car" style="--r:3deg"></div><div class="tiny-car target" style="--r:-2deg"></div><div class="tiny-car" style="--r:5deg"></div><div class="tiny-car" style="--r:-4deg"></div><div class="tiny-car" style="--r:2deg"></div><div class="tiny-car" style="--r:-5deg"></div><div class="tiny-car" style="--r:3deg"></div><div class="tiny-car" style="--r:-2deg"></div><div class="tiny-car" style="--r:4deg"></div></div></div><div class="poster-footer"><span>18 dealerships. 20+ brands.</span><span>Can you spot it?</span></div></div>'; }
+        },
+        {
+          title: "The Test-Drive Passport",
+          idea: "Makes comparison shopping feel like a small adventure. Each dealership visit earns a stamp until a clear favourite emerges.",
+          look: ["Passport-book geometry", "Dealer and vehicle-category stamps", "A little nostalgic, never childish"],
+          extensions: ["Physical weekend passport", "Stamp-collection Stories", "Prize for completing a shortlist"],
+          copy: ["Collect test drives, not browser tabs.", "Four stamps closer to the right car.", "Your shortlist deserves a road test."],
+          cls: "passport-ad theme-3",
+          art: function () { return '<div class="poster-inner"><div class="brand">' + logoTag + '<span class="poster-kicker">Admit one car shopper</span></div><div class="passport"><h2>Collect test drives,<br>not browser tabs.</h2><div class="stamps"><div class="stamp" style="--r:-9deg">SUV<br>tested</div><div class="stamp" style="--r:7deg">EV<br>approved</div><div class="stamp" style="--r:4deg">Wildcard<br>driven</div><div class="stamp" style="--r:-6deg">Favourite<br>found</div></div></div><div class="poster-footer"><span>Richmond Auto Mall Car Passport</span><span>2026</span></div></div>'; }
+        },
+        {
+          title: "Every Kind of Car Person.",
+          idea: "A graphic catalogue of vehicle personalities. Instead of promising generic selection, the campaign shows the exact kinds of people and needs covered.",
+          look: ["Paint-chip / material-swatch grid", "One car silhouette per personality", "Infinite modular combinations"],
+          extensions: ["‘Which one are you?’ carousel", "Dealer-specific swatch posters", "Animated wall of car personalities"],
+          copy: ["Every kind of car person, covered.", "From sensible grey to absolutely-not-sensible red.", "Whatever you drive like, start here."],
+          cls: "swatch-ad theme-4",
+          art: function () { return '<div class="poster-inner"><div class="brand">' + logoTag + '<span class="poster-kicker">The full spectrum</span></div><div class="swatch-head"><h2>Every kind of<br>car person.</h2></div><div class="swatch-grid"><div class="swatch-card"><div class="swatch-color" style="--c:var(--viz-series-1)"></div><span>Practical</span></div><div class="swatch-card"><div class="swatch-color" style="--c:var(--viz-series-2)"></div><span>Electric</span></div><div class="swatch-card"><div class="swatch-color" style="--c:var(--viz-series-3)"></div><span>Adventure</span></div><div class="swatch-card"><div class="swatch-color" style="--c:var(--viz-series-4)"></div><span>Luxury</span></div><div class="swatch-card"><div class="swatch-color" style="--c:var(--viz-series-5)"></div><span>Family</span></div><div class="swatch-card"><div class="swatch-color" style="--c:var(--viz-series-6)"></div><span>Fun</span></div></div><div class="poster-footer"><span>20+ brands in one place</span><span>Richmond Auto Mall</span></div></div>'; }
+        }
+      ];
+
+      function list(items) {
+        return "<ul>" + items.map(function (item) { return "<li>" + item + "</li>"; }).join("") + "</ul>";
+      }
+
+      function show(index) {
+        var item = campaigns[index];
+        poster.className = "poster " + item.cls;
+        poster.innerHTML = item.art();
+        detail.innerHTML = '<div class="detail-index">Campaign ' + String(index + 1).padStart(2, "0") + ' / 10</div><h2>' + item.title + '</h2><p class="idea">' + item.idea + '</p><div class="detail-grid"><div><h3>Visual system</h3>' + list(item.look) + '</div><div><h3>Ways it lives</h3>' + list(item.extensions) + '</div><div class="copy-bank"><h3>Copy bank</h3>' + item.copy.map(function (line) { return '<div class="copy-line">“' + line + '”</div>'; }).join("") + '</div></div>';
+        root.querySelectorAll("[data-campaign]").forEach(function (button) {
+          var selected = Number(button.getAttribute("data-campaign")) === index;
+          button.setAttribute("aria-pressed", selected ? "true" : "false");
+        });
+      }
+
+      root.querySelectorAll("[data-campaign]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          show(Number(button.getAttribute("data-campaign")));
+        });
+      });
+      show(0);
+    })();
+  </script>
+</div>
+
+<script id="codex-visualization-floating-ui-core" src="https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js"></script>
+<script id="codex-visualization-floating-ui-dom" src="https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js"></script>
+<script id="codex-visualization-lucide" async src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"></script>
+<script id="codex-visualization-tooltip">/* oxlint-disable typescript/no-unsafe-argument, typescript/no-unsafe-call, typescript/no-unsafe-return */
+// Runs inside the visualization sandbox, not the host webview.
+(() => {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set(["top", "right", "bottom", "left"]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =>
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest("[data-tooltip]")
+      : null;
+  const containsTarget = (trigger, target) =>
+    target?.nodeType != null && trigger.contains(target);
+  const getContent = (trigger) =>
+    trigger.getAttribute("data-tooltip")?.trim() ?? "";
+  const getPlacement = (trigger) => {
+    const placement = trigger.getAttribute("data-tooltip-placement");
+    return tooltipPlacements.has(placement) ? placement : "top";
+  };
+  const getTooltip = () => {
+    if (tooltip == null) {
+      tooltip = document.createElement("div");
+      tooltip.id = tooltipId;
+      tooltip.className = "tooltip";
+      tooltip.setAttribute("role", "tooltip");
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) => {
+    const ids = new Set(
+      (trigger.getAttribute("aria-describedby") ?? "")
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute("aria-describedby");
+    } else {
+      trigger.setAttribute("aria-describedby", [...ids].join(" "));
+    }
+  };
+  const clearOpenTimeout = () => {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) => {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) => {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              "--tooltip-available-width",
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              "--tooltip-available-height",
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: "fixed",
+    })
+      .then(({ x, y }) => {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = "visible";
+      })
+      .catch(() => {
+        if (activeTrigger === trigger && request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) => {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = "hidden";
+    floating.style.transform = "translate(0, 0)";
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () => {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) => {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() < skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() => {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(":focus-visible")) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) => {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () => {
+    closeTooltip(false);
+    document.removeEventListener("pointerover", handlePointerOpen);
+    document.removeEventListener("pointerout", handleLeave);
+    document.removeEventListener("focusin", handleFocusIn);
+    document.removeEventListener("focusout", handleLeave);
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener("pointerover", handlePointerOpen);
+  document.addEventListener("pointerout", handleLeave);
+  document.addEventListener("focusin", handleFocusIn);
+  document.addEventListener("focusout", handleLeave);
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("contextmenu", handleContextMenu);
+  window.addEventListener("pagehide", destroy, { once: true });
+})();
+</script>
+<script id="codex-visualization-lucide-initialization">(() => {
+  const initialize = () => {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById("codex-visualization-lucide")
+    ?.addEventListener("load", initialize, { once: true });
+})();
+</script>
+</body>
+</html>
